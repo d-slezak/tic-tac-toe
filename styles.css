@@ -2,8 +2,9 @@
     --darkBg: #233142;
     --lightBg: #455d7a;
     --white: #e3e3e3;
-    --accent: #f95959;
+    --accent: #ff5959;;
     --shadow: #252525;
+    --font: 'Varela Round', sans-serif;
 
 }
 
@@ -82,8 +83,16 @@ body, h1, h2, h3, p{
 }
 
 .gameTile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     height: 150px;
     width: 150px;
+
+    font-family: var(--font);
+    color: var(--accent);
+    font-size: 7rem;
 
 }
 
