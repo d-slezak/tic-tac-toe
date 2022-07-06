@@ -45,7 +45,6 @@ const game = (() => {
 
     const checkRow = (row) => {
         let board = gameboard.getGameboard();
-        console.log(board);
         if (row === 1){
             return (board[0] === board[1] && board[0] === board[2]) ? true: false;
         } else if (row === 2) {
@@ -56,11 +55,35 @@ const game = (() => {
     }
 
     const checkCol = (col) => {
+        let board = gameboard.getGameboard();
+        if (col === 1){
+            return (board[0] === board[3] && board[0] === board[6]) ? true: false;
+        } else if (col === 2) {
+            return (board[1] === board[4] && board[1] === board[7]) ? true: false;
+        } else if (col === 0){
+            return (board[2] === board[5] && board[2] === board[8]) ? true: false;
+        }
+    }
+
+    const checkDiagonal = (diag) => {
+        let board = gameboard.getGameboard();
+        if ((diag % 4) === 1){
+            return (board[0] === board[4] && board[0] === board[8]) ? true: false;
+        }
+        else {
+            return (board[2] === board[4] && board[2] === board[6]) ? true: false;
+        }
 
     }
 
     const checkWinner = (tile) => {
-        console.log(game.checkRow(Math.ceil(tile/3)));
+        let result = false;
+        result = (result) ? result : game.checkRow(Math.ceil(tile/3));
+        result = (result) ? result :game.checkCol(tile%3);
+        if ((tile % 2) === 1) {
+            result = (result) ? result : game.checkDiagonal(tile);
+        }
+        console.log(result);
     }
 
     const makeMove = (tile) => {
@@ -69,7 +92,7 @@ const game = (() => {
         game.changePlayer();
     }
 
-    return {currentPlayer, checkWinner, checkRow,changePlayer, makeMove}
+    return {currentPlayer, checkWinner, checkRow, checkCol, checkDiagonal, changePlayer, makeMove}
 })();
 
 const gameTiles = document.querySelectorAll('.gameTile');
