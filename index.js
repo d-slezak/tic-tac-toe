@@ -1,5 +1,6 @@
 const playerFactory = (name, symbol) => {
-    return {name, symbol}
+    const score = 0;
+    return {name, symbol, score}
 }
 
 const displayController = (() => {
@@ -8,7 +9,12 @@ const displayController = (() => {
         changeTile.textContent = value;
     }
 
-    return {renderTile}
+    const updateScore = () => {
+        const playerScore = document.getElementById(`${game.currentPlayer.name}Score`);
+        playerScore.textContent = game.currentPlayer.score;
+    }
+
+    return {renderTile, updateScore}
 })();
 
 const gameboard = (() => {
@@ -21,6 +27,7 @@ const gameboard = (() => {
     const setGametile = (tile, value) => {
         gameboard[tile - 1] = value;
         displayController.renderTile(tile, value);
+
     }
 
 
@@ -38,6 +45,7 @@ const gameboard = (() => {
 const game = (() => {
     let playerOne = playerFactory('playerOne', 'X');
     let playerTwo = playerFactory('playerTwo', 'O');
+    let move = 0;
 
     let currentPlayer = playerOne;
 
@@ -83,16 +91,37 @@ const game = (() => {
         if ((tile % 2) === 1) {
             result = (result) ? result : game.checkDiagonal(tile);
         }
-        console.log(result);
+
+        return result;
     }
 
     const makeMove = (tile) => {
-        gameboard.setGametile(tile, game.currentPlayer.symbol);
-        game.checkWinner(tile);
-        game.changePlayer();
+        if (gameboard.getGameboard()[tile-1] != 'X' && gameboard.getGameboard()[tile-1] != 'O')
+        {
+            game.move++;
+            gameboard.setGametile(tile, game.currentPlayer.symbol);
+            if (game.checkWinner(tile))
+            {  
+                alert(`${game.currentPlayer.name} Won`);
+                gameboard.resetGameboard();
+                game.currentPlayer.score++;
+                displayController.updateScore();
+                game.currentPlayer = playerOne;
+                game.move = 0;
+                return;
+            }
+            else if (game.move === 9) {
+                alert(`It was a tie`);
+                gameboard.resetGameboard();
+                game.currentPlayer = playerOne;
+                game.move = 0;
+                return;
+            }
+            game.changePlayer();
+        }
     }
 
-    return {currentPlayer, checkWinner, checkRow, checkCol, checkDiagonal, changePlayer, makeMove}
+    return {currentPlayer, move, checkWinner, checkRow, checkCol, checkDiagonal, changePlayer, makeMove}
 })();
 
 const gameTiles = document.querySelectorAll('.gameTile');
